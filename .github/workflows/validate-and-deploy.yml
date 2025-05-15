@@ -34,10 +34,6 @@ jobs:
       - name: Authenticate to Salesforce Org
         run: |
           echo "Authenticating to Salesforce Org..."
-          echo ${{secrets.SF_CLIENT_ID}} | sed 's/./& /g'
-          echo "Username  :   ${{ secrets.SF_USERNAME }}"
-          echo "Org Alias :   ${{ secrets.SF_ORG_ALIAS }}"
-          echo "Instance URL :   ${{ secrets.SF_INSTANCE_URL }}" 
           echo "${{ secrets.SF_JWT_KEY }}" > server.key
           sf org login jwt   --client-id "${{ secrets.SF_CLIENT_ID }}" \
                              --jwt-key-file server.key \
@@ -47,7 +43,7 @@ jobs:
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
-          SF_CONSUMER_KEY: ${{ secrets.SF_CLIENT_ID }}
+          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
           SF_ORG_ALIAS: ${{ secrets.SF_ORG_ALIAS }}
           SF_INSTANCE_URL: ${{ secrets.SF_INSTANCE_URL }}
 
