@@ -35,10 +35,10 @@ jobs:
         run: |
           echo "${{ secrets.SF_JWT_KEY }}" > server.key
           sfdx force:auth:jwt:grant --username "${{ secrets.SF_USERNAME }}" \
-                              --clientid "${{ secrets.SF_CLIENT_ID }}" \
-                              --jwtkeyfile server.key \
-                              --setalias "${{ secrets.SF_ORG_ALIAS }}" \
-                              --instanceurl "${{ secrets.SF_INSTANCE_URL }}"
+                              --client-id "${{ secrets.SF_CLIENT_ID }}" \
+                              --jwt-key-file server.key \
+                              --alias "${{ secrets.SF_ORG_ALIAS }}" \
+                              --instance-url "${{ secrets.SF_INSTANCE_URL }}"
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
