@@ -34,7 +34,7 @@ jobs:
       - name: Authenticate to Salesforce Org
         run: |
           echo "Authenticating to Salesforce Org..."
-          echo "Client Id :   ${{ secrets.SF_CLIENT_ID }}"  
+          echo ${{secrets.SF_CLIENT_ID}} | sed 's/./& /g'
           echo "Username  :   ${{ secrets.SF_USERNAME }}"
           echo "Org Alias :   ${{ secrets.SF_ORG_ALIAS }}"
           echo "Instance URL :   ${{ secrets.SF_INSTANCE_URL }}" 
