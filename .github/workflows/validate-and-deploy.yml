@@ -23,7 +23,7 @@ jobs:
 
       # Step 3: Install Salesforce CLI
       - name: Install Salesforce CLI
-        uses: salesforcecli/setup-sfd@v1
+        uses: salesforcecli/setup-sfdx@v1
 
       # Step 4: Install Required SFDX Plugins
       - name: Install SFDX Plugins
