@@ -1,0 +1,72 @@
+name: Validate and Deploy to Salesforce on ST Merge
+
+on:
+  push:
+    branches:
+      - ST
+
+jobs:
+  validate-and-deploy:
+    name: Validate and Deploy to Salesforce
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Adjust if needed
+
+      # Step 3: Install Salesforce CLI
+      - name: Install Salesforce CLI
+        run: npm install sfdx-cli --global
+
+      # Step 4: Install Required SFDX Plugins
+      - name: Install SFDX Plugins
+        run: |
+          sfdx plugins:install sfdx-git-delta
+
+      # Step 5: Authenticate to Salesforce Org
+      - name: Authenticate to Salesforce Org
+        run: |
+          echo "${{ secrets.SF_JWT_KEY }}" > server.key
+          sfdx auth:jwt:grant --username "${{ secrets.SF_USERNAME }}" \
+                              --clientid "${{ secrets.SF_CLIENT_ID }}" \
+                              --jwtkeyfile server.key \
+                              --setalias "${{ secrets.SF_ORG_ALIAS }}" \
+                              --instanceurl "${{ secrets.SF_INSTANCE_URL }}"
+        env:
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_USERNAME: ${{ secrets.SF_USERNAME }}
+          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+          SF_ORG_ALIAS: ${{ secrets.SF_ORG_ALIAS }}
+          SF_INSTANCE_URL: ${{ secrets.SF_INSTANCE_URL }}
+
+      # Step 6: Generate Delta Package
+      - name: Generate Delta Package
+        run: |
+          git fetch origin main
+          git diff --name-only origin/main > changed_files.txt
+          chmod +x scripts/generate-delta.sh
+          ./scripts/generate-delta.sh
+
+      # Step 7: Validate Deployment (Dry Run)
+      - name: Validate Deployment
+        run: |
+          sfdx force:source:deploy -x delta/package/package.xml \
+                                   -u "${{ secrets.SF_ORG_ALIAS }}" \
+                                   --checkonly \
+                                   --testlevel RunLocalTests \
+                                   --json
+
+      # Step 8: Perform Actual Deployment (If Validation Succeeds)
+      - name: Perform Deployment
+        run: |
+          sfdx force:source:deploy -x delta/package/package.xml \
+                                   -u "${{ secrets.SF_ORG_ALIAS }}" \
+                                   --testlevel RunLocalTests \
+                                   --json
