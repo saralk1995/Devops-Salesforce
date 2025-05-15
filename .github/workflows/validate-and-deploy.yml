@@ -28,7 +28,7 @@ jobs:
       # Step 4: Install Required SFDX Plugins
       - name: Install SFDX Plugins
         run: |
-          sfdx plugins:install sfdx-git-delta
+          sfdx plugins:install sfdx-git-delta --noprompt
 
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
@@ -42,7 +42,7 @@ jobs:
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
-          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+          SF_CONSUMER_KEY: ${{ secrets.SF_CLIENT_ID }}
           SF_ORG_ALIAS: ${{ secrets.SF_ORG_ALIAS }}
           SF_INSTANCE_URL: ${{ secrets.SF_INSTANCE_URL }}
 
