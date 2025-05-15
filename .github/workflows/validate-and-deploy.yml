@@ -23,18 +23,18 @@ jobs:
 
       # Step 3: Install Salesforce CLI
       - name: Install Salesforce CLI
-        run: npm install sfdx-cli --global
+        run: salesforcecli/setup-sfd@v1
 
       # Step 4: Install Required SFDX Plugins
       - name: Install SFDX Plugins
         run: |
-          sfdx plugins:install sfdx-git-delta
+          sfdx plugins:install sfdx-git-delta --yes
 
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
         run: |
           echo "${{ secrets.SF_JWT_KEY }}" > server.key
-          sfdx auth:jwt:grant --username "${{ secrets.SF_USERNAME }}" \
+          sfdx force:auth:jwt:grant --username "${{ secrets.SF_USERNAME }}" \
                               --clientid "${{ secrets.SF_CLIENT_ID }}" \
                               --jwtkeyfile server.key \
                               --setalias "${{ secrets.SF_ORG_ALIAS }}" \
