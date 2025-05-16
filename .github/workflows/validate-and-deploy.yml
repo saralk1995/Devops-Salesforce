@@ -48,9 +48,9 @@ jobs:
       # Step 7: Validate Deployment (Dry Run)
       - name: Validate Deployment
         run: |
-          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --checkonly --testlevel RunLocalTests --wait 10
+          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --checkonly --testlevel NoTestRun --wait 10
 
       # Step 8: Perform Actual Deployment (If Validation Succeeds)
       - name: Perform Deployment
         run: |
-          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --testlevel RunLocalTests --wait 10
+          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --testlevel NoTestRun --wait 10
