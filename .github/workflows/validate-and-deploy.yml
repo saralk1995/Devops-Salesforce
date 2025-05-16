@@ -21,17 +21,11 @@ jobs:
         with:
           node-version: "18.17.0" 
     
-      - name: Install npm dependencies
-        run:  npm install
 
       # Step 3: Install Salesforce CLI
       - name: Install Salesforce CLI
         uses: sfdx-actions/setup-sfdx@v1
 
-      # Step 4: Install Required SFDX Plugins
-      - name: Install SFDX Plugins
-        run: |
-          npm install --no-save sgd
 
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
@@ -43,6 +37,7 @@ jobs:
                              --username "${{ secrets.SF_USERNAME }}" \
                              --instance-url "${{ secrets.SF_INSTANCE_URL }}" \
                              --alias "${{ secrets.SF_ORG_ALIAS }}"
+                             --setalias deployOrg
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
@@ -50,30 +45,13 @@ jobs:
           SF_ORG_ALIAS: ${{ secrets.SF_ORG_ALIAS }}
           SF_INSTANCE_URL: ${{ secrets.SF_INSTANCE_URL }}
 
-      # Step 6: Generate Delta Package
-      - name: Generate Delta Package
-        run: |
-          chmod +x scripts/generate-delta.sh
-          ./scripts/generate-delta.sh
 
       # Step 7: Validate Deployment (Dry Run)
       - name: Validate Deployment
         run: |
-          if [ -f delta/package/package.xml ]; then
-            sfdx force:source:deploy -x delta/package/package.xml \
-                                     -u "${{ secrets.SF_ORG_ALIAS }}" \
-                                     --checkonly \
-                                     --testlevel RunLocalTests \
-                                     --json
-          else
-            echo "No changes detected. Skipping deployment."
-            exit 0
-          fi
+          sfdx force:source:deploy -p force-app -u deployOrg --checkonly --testlevel RunLocalTests --wait 10
 
       # Step 8: Perform Actual Deployment (If Validation Succeeds)
       - name: Perform Deployment
         run: |
-          sfdx force:source:deploy -x delta/package/package.xml \
-                                   -u "${{ secrets.SF_ORG_ALIAS }}" \
-                                   --testlevel RunLocalTests \
-                                   --json
+          sfdx force:source:deploy -p force-app -u deployOrg --testlevel RunLocalTests --wait 10
