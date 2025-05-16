@@ -54,8 +54,6 @@ jobs:
       # Step 6: Generate Delta Package
       - name: Generate Delta Package
         run: |
-          git fetch origin main
-          git diff --name-only origin/main > changed_files.txt
           chmod +x scripts/generate-delta.sh
           ./scripts/generate-delta.sh
 
