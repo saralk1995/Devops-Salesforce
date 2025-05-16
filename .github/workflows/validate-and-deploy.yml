@@ -37,7 +37,6 @@ jobs:
                              --username "${{ secrets.SF_USERNAME }}" \
                              --instance-url "${{ secrets.SF_INSTANCE_URL }}" \
                              --alias "${{ secrets.SF_ORG_ALIAS }}"
-                             --setalias deployOrg
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
