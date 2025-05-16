@@ -31,6 +31,7 @@ jobs:
       - name: Authenticate to Salesforce Org
         run: |
           echo "Authenticating to Salesforce Org..."
+          echo "${{ secrets.SF_JWT_KEY }}" > server.key
           sf org login jwt   --client-id "${{ secrets.SF_CLIENT_ID }}" \
                              --jwt-key-file server.key \
                              --username "${{ secrets.SF_USERNAME }}" \
@@ -52,4 +53,4 @@ jobs:
       # Step 8: Perform Actual Deployment (If Validation Succeeds)
       - name: Perform Deployment
         run: |
-          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --testlevel RunLocalTests
+          sfdx force:source:deploy -p force-app -u "${{ secrets.SF_ORG_ALIAS }}" --testlevel RunLocalTests --wait 10
