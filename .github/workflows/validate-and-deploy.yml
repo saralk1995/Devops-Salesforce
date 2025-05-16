@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18.17.0" 
+    
+      - name: Install npm dependencies
+        run:  npm install
 
       # Step 3: Install Salesforce CLI
       - name: Install Salesforce CLI
@@ -31,8 +34,7 @@ jobs:
           npm install -g sfdx-git-delta
           sfdx plugins:install sfdx-git-delta
 
-      - name: Install npm dependencies
-        run:  npm install
+
 
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
