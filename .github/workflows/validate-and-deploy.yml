@@ -30,6 +30,9 @@ jobs:
         run: |
           sfdx plugins:install sfdx-git-delta
 
+      - name: Install npm dependencies
+        run:  npm install
+
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
         run: |
@@ -58,11 +61,16 @@ jobs:
       # Step 7: Validate Deployment (Dry Run)
       - name: Validate Deployment
         run: |
-          sfdx force:source:deploy -x delta/package/package.xml \
-                                   -u "${{ secrets.SF_ORG_ALIAS }}" \
-                                   --checkonly \
-                                   --testlevel RunLocalTests \
-                                   --json
+          if [-f delta/package/package.xml ]; then
+            sfdx force:source:deploy -x delta/package/package.xml \
+                                     -u "${{ secrets.SF_ORG_ALIAS }}" \
+                                     --checkonly \
+                                     --testlevel RunLocalTests \
+                                     --json
+          else
+            echo "No changes detected. Skipping deployment."
+            exit 0
+          fi
 
       # Step 8: Perform Actual Deployment (If Validation Succeeds)
       - name: Perform Deployment
