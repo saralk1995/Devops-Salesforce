@@ -31,7 +31,7 @@ jobs:
       # Step 4: Install Required SFDX Plugins
       - name: Install SFDX Plugins
         run: |
-          npm install --no-save sfdx-git-delta
+          npm install -g sfdx-git-delta
 
       # Step 5: Authenticate to Salesforce Org
       - name: Authenticate to Salesforce Org
